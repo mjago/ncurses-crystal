@@ -1,4 +1,10 @@
-@[Link("ncurses")]
+# Fix for UTF-8 on ubuntu (ncursesw)
+{% if flag?(:linux) %}
+  @[Link("gpm")]
+  @[Link("ncursesw")]
+{% else %}
+  @[Link("ncurses")]
+{% end %}
 
 lib LibNCurses
   type Window = Void*
