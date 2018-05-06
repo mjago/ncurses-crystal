@@ -26,7 +26,7 @@ module NCurses
     end
 
     def border(ls = '|', rs = '|', ts = '-', bs = '_', tl = '+', tr = '+', bl = '+', br = '+')
-      LibNCurses.wborder(self, ls.ord, rs.ord, ts.ord, bs.ord, tl.ord, tr.ord, bl.ord,br.ord)
+      LibNCurses.wborder(self, ls.ord, rs.ord, ts.ord, bs.ord, tl.ord, tr.ord, bl.ord, br.ord)
     end
 
     def attr_on(*attributes)
