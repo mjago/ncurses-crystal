@@ -13,25 +13,20 @@ module NCurses
       initialize(LibNCurses.newwin(height || max_height, width || max_width, y, x))
     end
 
+    def beginning_dimensions
+      {LibNCurses.getbegy(self), LibNCurses.getbegx(self)}
+    end
+
     def max_dimensions
       {LibNCurses.getmaxy(self), LibNCurses.getmaxx(self)}
     end
 
-    private macro attr_mask(*attributes)
-      mask = LibNCurses::Attribute::NORMAL
+    def box(x : Int32, y : Int32) : Int32
+      LibNCurses.box(self, x, y)
+    end
 
-      attributes.each do |attribute|
-        mask = case(attribute)
-        {% for attribute in ATTRIBUTES %}
-          when {{attribute}}
-            LibNCurses::Attribute::{{attribute.upcase.id}}
-        {% end %}
-        else
-          raise "unknown attribute #{attribute}"
-        end
-      end
-
-      mask
+    def border(ls = '|', rs = '|', ts = '-', bs = '_', tl = '+', tr = '+', bl = '+', br = '+')
+      LibNCurses.wborder(self, ls.ord, rs.ord, ts.ord, bs.ord, tl.ord, tr.ord, bl.ord,br.ord)
     end
 
     def attr_on(*attributes)
@@ -120,6 +115,25 @@ module NCurses
       when 32..127
         yield(char.chr, nil)
       end
+    end
+
+    # private
+
+    private macro attr_mask(*attributes)
+      mask = LibNCurses::Attribute::NORMAL
+
+      attributes.each do |attribute|
+        mask = case(attribute)
+        {% for attribute in ATTRIBUTES %}
+          when {{attribute}}
+            LibNCurses::Attribute::{{attribute.upcase.id}}
+        {% end %}
+        else
+          raise "unknown attribute #{attribute}"
+        end
+      end
+
+      mask
     end
 
     private def on_special_input

@@ -41,6 +41,10 @@ module NCurses
     end
   end
 
+  def mouse_mask(new_mask : UInt64, old_mask : UInt64*) : UInt64
+    LibNCurses.mousemask(new_mask, old_mask)
+  end
+
   def lines
     if stdscr = @@stdscr
       LibNCurses.getmaxy(stdscr.to_unsafe)

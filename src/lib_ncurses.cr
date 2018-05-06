@@ -13,6 +13,14 @@ lib LibNCurses
   ATTR_SHIFT = 8_u32
   $color_pairs = COLOR_PAIRS : Int32
   $colors = COLORS : Int32
+  $bstate : UInt64 # button state bits
+
+  struct MEvent
+    id : Int16 # ID to distinguish multiple devices
+    x : Int32
+    y : Int32
+    z : Int32 # event coordinates
+  end
 
   enum Attribute
     NORMAL     = 1_u32 - 1_u32
@@ -57,6 +65,36 @@ lib LibNCurses
     F11       = 0o410 + 11
     F12       = 0o410 + 12
     ENTER     = 0o527
+    KEY_MOUSE = 0o631
+  end
+
+  @[Flags]
+  enum MouseMask
+    BUTTON1_PRESSED        # mouse button 1 down
+    BUTTON1_RELEASED       # mouse button 1 up
+    BUTTON1_CLICKED        # mouse button 1 clicked
+    BUTTON1_DOUBLE_CLICKED # mouse button 1 double clicked
+    BUTTON1_TRIPLE_CLICKED # mouse button 1 triple clicked
+    BUTTON2_PRESSED        # mouse button 2 down
+    BUTTON2_RELEASED       # mouse button 2 up
+    BUTTON2_CLICKED        # mouse button 2 clicked
+    BUTTON2_DOUBLE_CLICKED # mouse button 2 double clicked
+    BUTTON2_TRIPLE_CLICKED # mouse button 2 triple clicked
+    BUTTON3_PRESSED        # mouse button 3 down
+    BUTTON3_RELEASED       # mouse button 3 up
+    BUTTON3_CLICKED        # mouse button 3 clicked
+    BUTTON3_DOUBLE_CLICKED # mouse button 3 double clicked
+    BUTTON3_TRIPLE_CLICKED # mouse button 3 triple clicked
+    BUTTON4_PRESSED        # mouse button 4 down
+    BUTTON4_RELEASED       # mouse button 4 up
+    BUTTON4_CLICKED        # mouse button 4 clicked
+    BUTTON4_DOUBLE_CLICKED # mouse button 4 double clicked
+    BUTTON4_TRIPLE_CLICKED # mouse button 4 triple clicked
+    BUTTON_SHIFT           # shift was down during button state change
+    BUTTON_CTRL            # control was down during button state change
+    BUTTON_ALT             # alt was down during button state change
+    ALL_MOUSE_EVENTS       # report all button state changes
+    REPORT_MOUSE_POSITION  #
   end
 
   fun initscr : Window
@@ -71,6 +109,8 @@ lib LibNCurses
   fun keypad(window : Window, value : Bool)
   fun wattr_on(window : Window, attribute : Attribute, unused : Void*)
   fun wattr_off(window : Window, attribute : Attribute, unused : Void*)
+  fun getbegy(window : Window) : Int32
+  fun getbegx(window : Window) : Int32
   fun getmaxy(window : Window) : Int32
   fun getmaxx(window : Window) : Int32
   fun notimeout(window : Window, value : Bool)
@@ -92,4 +132,7 @@ lib LibNCurses
   fun addch(chr : LibC::Char)
   fun refresh
   fun clear
+  fun box(window : Window, x : Int32, y : Int32) : Int32
+  fun wborder(window : Window, ls : Int32, rs : Int32, ts : Int32, bs : Int32, tl : Int32, tr : Int32, bl : Int32, br : Int32) : Int32
+  fun mousemask(newmask : UInt64, oldmask : UInt64*) : UInt64
 end
